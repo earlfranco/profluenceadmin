@@ -2,19 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class Management extends StatefulWidget {
-  const Management({super.key});
+class BanUser extends StatefulWidget {
+  const BanUser({super.key});
 
   @override
-  State<Management> createState() => _ManagementState();
+  State<BanUser> createState() => _BanUserState();
 }
 
-class _ManagementState extends State<Management> {
+class _BanUserState extends State<BanUser> {
   List<Map<String, dynamic>> userData = [];
   List<Map<String, dynamic>> filteredData = [];
-  int rowsPerPage = 25; // Number of rows per page
-  int currentPage = 0; // Current page number
-  String searchQuery = ''; // Search query text
+  int rowsPerPage = 25;
+  int currentPage = 0;
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -22,11 +22,12 @@ class _ManagementState extends State<Management> {
     fetchUserData();
   }
 
-  // Fetch user data from Firestore
   Future<void> fetchUserData() async {
     try {
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('users').get();
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('isvalid', isEqualTo: 2)
+          .get();
 
       List<Map<String, dynamic>> users = snapshot.docs.map((doc) {
         return doc.data() as Map<String, dynamic>;
@@ -41,7 +42,6 @@ class _ManagementState extends State<Management> {
     }
   }
 
-  // Function to handle pagination logic
   List<Map<String, dynamic>> getPaginatedData() {
     int start = currentPage * rowsPerPage;
     int end = start + rowsPerPage;
@@ -49,26 +49,12 @@ class _ManagementState extends State<Management> {
         start, end > filteredData.length ? filteredData.length : end);
   }
 
-  Future<void> updatemute(String userid, int status) async {
+  Future<void> updateBanning(String userid) async {
     try {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userid)
-          .update({'ismute': status});
-      setState(() {
-        fetchUserData();
-      });
-    } catch (error) {
-      debugPrint("$error");
-    }
-  }
-
-  Future<void> updateBanning(String userid, int status) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userid)
-          .update({'isvalid': status});
+          .update({'isvalid': 2});
       setState(() {
         fetchUserData();
       });
@@ -102,41 +88,32 @@ class _ManagementState extends State<Management> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // Search bar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
               width: 340,
               child: TextField(
                 onChanged: search,
-                style: const TextStyle(
-                    color: Colors.white), // Set text color to white
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Search by name or email',
-                  hintStyle: const TextStyle(
-                      color: Colors
-                          .white70), // Set hint text color to a lighter white
-                  prefixIcon: const Icon(Icons.search,
-                      color: Colors.white), // Set the icon color to white
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  prefixIcon: const Icon(Icons.search, color: Colors.white),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        color: Colors.white), // Set border color to white
+                    borderSide: const BorderSide(color: Colors.white),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        color:
-                            Colors.white), // Set focused border color to white
+                    borderSide: const BorderSide(color: Colors.white),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
             ),
           ),
-          // Data table
           Expanded(
             child: SingleChildScrollView(
               child: Container(
@@ -176,23 +153,6 @@ class _ManagementState extends State<Management> {
                               : Colors.white)),
                       DataCell(Row(
                         children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: user['ismute'] == 0
-                                    ? Colors.white
-                                    : Colors.lightBlueAccent),
-                            onPressed: () {
-                              updatemute(
-                                  user['userid'], user['ismute'] == 0 ? 1 : 0);
-                            },
-                            child: Text(
-                              user['ismute'] == 0 ? "Mute" : "Muted",
-                              style: TextStyle(
-                                  color: user['ismute'] == 0
-                                      ? Colors.black
-                                      : Colors.white),
-                            ),
-                          ),
                           const SizedBox(
                             width: 3,
                           ),
@@ -200,8 +160,7 @@ class _ManagementState extends State<Management> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.redAccent),
                             onPressed: () {
-                              updateBanning(
-                                  user['userid'], user['isvalid'] == 1 ? 2 : 1);
+                              updateBanning(user['userid']);
                             },
                             child: Text(
                               user['isvalid'] == 1 ? "Ban" : "Unban",
@@ -279,7 +238,7 @@ class _ManagementState extends State<Management> {
           title: const Text("User Logs"),
           content: SizedBox(
             width: 183,
-            height: 230,
+            height: 230, // Set the height here to constrain the content
             child: SingleChildScrollView(
               child: Column(
                 children: [

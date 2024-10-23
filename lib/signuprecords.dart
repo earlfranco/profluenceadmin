@@ -27,7 +27,60 @@ class SignupRecords extends StatelessWidget {
                 BarChartData(
                   alignment: BarChartAlignment.center,
                   barTouchData: BarTouchData(
-                    enabled: false,
+                    enabled: true,
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        String month;
+                        switch (group.x.toInt()) {
+                          case 0:
+                            month = 'Jan';
+                            break;
+                          case 1:
+                            month = 'Feb';
+                            break;
+                          case 2:
+                            month = 'Mar';
+                            break;
+                          case 3:
+                            month = 'Apr';
+                            break;
+                          case 4:
+                            month = 'May';
+                            break;
+                          case 5:
+                            month = 'Jun';
+                            break;
+                          case 6:
+                            month = 'Jul';
+                            break;
+                          case 7:
+                            month = 'Aug';
+                            break;
+                          case 8:
+                            month = 'Sep';
+                            break;
+                          case 9:
+                            month = 'Oct';
+                            break;
+                          case 10:
+                            month = 'Nov';
+                            break;
+                          case 11:
+                            month = 'Dec';
+                            break;
+                          default:
+                            month = '';
+                        }
+
+                        return BarTooltipItem(
+                          '$month\n${rod.toY.toInt()} signups',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   titlesData: FlTitlesData(
                     show: true,
@@ -171,7 +224,6 @@ class SignupRecords extends StatelessWidget {
                     }
 
                     int signupCount = monthlySignupCounts[month] ?? 0;
-                    debugPrint("$month signup count: $signupCount");
 
                     return BarChartGroupData(
                       x: index,

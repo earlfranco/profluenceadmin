@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:profluenceadmin/active.dart';
 import 'package:profluenceadmin/dailylogin.dart';
-import 'package:profluenceadmin/signuprecords.dart'; // For formatting date
+import 'package:profluenceadmin/newuser.dart';
+import 'package:profluenceadmin/signuprecords.dart';
 
 class Mainpage extends StatefulWidget {
   const Mainpage({super.key});
@@ -77,7 +78,7 @@ class _MainpageState extends State<Mainpage> {
     } catch (error) {
       debugPrint("Error fetching user signups: $error");
       setState(() {
-        isLoading = false; // Set to false even if there's an error
+        isLoading = false;
       });
     }
   }
@@ -143,47 +144,26 @@ class _MainpageState extends State<Mainpage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 30,
-          ),
-          if (isLoading)
-            const Center(child: CircularProgressIndicator())
-          else if (dailyLoginCounts.isEmpty)
-            const Center(
-              child: Text("No login data available"),
-            )
-          else
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          color: const Color(0xff1A1F32),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Column(
-                        children: [
-                          const Center(
-                            child: Text(
-                              "Monthly Signup",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          SignupRecords(
-                              monthlySignupCounts: monthlySignupCounts),
-                        ],
-                      )),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            if (isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (dailyLoginCounts.isEmpty)
+              const Center(
+                child: Text("No login data available"),
+              )
+            else
+              Row(
+                children: [
+                  Expanded(
                     child: Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
@@ -193,16 +173,56 @@ class _MainpageState extends State<Mainpage> {
                           children: [
                             const Center(
                               child: Text(
-                                "Daily Login",
+                                "Monthly Signup",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
-                            DialyLogin(dailyLoginCounts: dailyLoginCounts),
+                            SignupRecords(
+                                monthlySignupCounts: monthlySignupCounts),
                           ],
-                        ))),
-              ],
+                        )),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              color: const Color(0xff1A1F32),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Column(
+                            children: [
+                              const Center(
+                                child: Text(
+                                  "Daily Login",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              DialyLogin(dailyLoginCounts: dailyLoginCounts),
+                            ],
+                          ))),
+                ],
+              ),
+            const SizedBox(
+              height: 30,
             ),
-        ],
+            const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ActiveUsers(),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: NewUsers(),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

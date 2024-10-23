@@ -27,7 +27,44 @@ class DialyLogin extends StatelessWidget {
                 BarChartData(
                   alignment: BarChartAlignment.center,
                   barTouchData: BarTouchData(
-                    enabled: false,
+                    enabled: true,
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        String day;
+                        switch (group.x.toInt()) {
+                          case 0:
+                            day = 'Mon';
+                            break;
+                          case 1:
+                            day = 'Tue';
+                            break;
+                          case 2:
+                            day = 'Wed';
+                            break;
+                          case 3:
+                            day = 'Thu';
+                            break;
+                          case 4:
+                            day = 'Fri';
+                            break;
+                          case 5:
+                            day = 'Sat';
+                            break;
+                          case 6:
+                            day = 'Sun';
+                            break;
+                          default:
+                            day = '';
+                        }
+                        return BarTooltipItem(
+                          '$day\n${rod.toY.toInt()} logins',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   titlesData: FlTitlesData(
                     show: true,
@@ -70,7 +107,6 @@ class DialyLogin extends StatelessWidget {
                             child: Text(
                               text,
                               style: style,
-                              selectionColor: Colors.white,
                             ),
                           );
                         },
@@ -145,7 +181,6 @@ class DialyLogin extends StatelessWidget {
                     }
 
                     int loginCount = dailyLoginCounts[day] ?? 0;
-                    debugPrint("$day login count: $loginCount");
 
                     return BarChartGroupData(
                       x: index,
