@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:profluenceadmin/Management.dart';
 import 'package:profluenceadmin/ban.dart';
+import 'package:profluenceadmin/controller/admin.dart';
 import 'package:profluenceadmin/controller/adminaccess.dart';
 import 'package:profluenceadmin/mainpage.dart';
 
@@ -21,6 +22,8 @@ class _SideNavigationState extends State<SideNavigation> {
       return const Management();
     } else if (page == 2) {
       return const BanUser();
+    } else if (page == 3) {
+      return const GenerateAccessCode();
     } else {
       return const Mainpage();
     }
@@ -44,7 +47,7 @@ class _SideNavigationState extends State<SideNavigation> {
                     width: MediaQuery.of(context).size.width,
                     height: 210,
                     child: const DrawerHeader(
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: BoxDecoration(color: Colors.lightBlueAccent),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +56,7 @@ class _SideNavigationState extends State<SideNavigation> {
                             child: Text(
                               "PROFLUENCE",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 23,
                               ),
                             ),
@@ -120,7 +123,27 @@ class _SideNavigationState extends State<SideNavigation> {
                     ),
                   ),
                   const SizedBox(
-                    height: 120,
+                    height: 20,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      setState(() {
+                        page = 3;
+                      });
+                      debugPrint("$page");
+                    },
+                    leading: const Icon(
+                      Icons.admin_panel_settings_outlined,
+                      size: 46,
+                      color: Colors.white,
+                    ),
+                    title: const Text(
+                      "Admin",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
                   ),
                   ListTile(
                     onTap: () {
