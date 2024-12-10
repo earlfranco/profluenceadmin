@@ -19,7 +19,7 @@ class _NewUsersState extends State<NewUsers> {
 
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('timesignup', isGreaterThanOrEqualTo: oneMonthAgo)
+          .where('timesignup', isLessThanOrEqualTo: oneMonthAgo)
           .limit(11)
           .get();
 

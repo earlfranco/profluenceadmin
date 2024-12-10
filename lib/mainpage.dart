@@ -28,7 +28,7 @@ class _MainpageState extends State<Mainpage> {
   Future<void> fetchalluseronline() async {
     try {
       QuerySnapshot userlogindocs =
-          await FirebaseFirestore.instance.collection('users').get();
+          await FirebaseFirestore.instance.collection('dailylogin').get();
 
       // Log how many documents are fetched
       debugPrint("Documents fetched: ${userlogindocs.docs.length}");
@@ -60,7 +60,7 @@ class _MainpageState extends State<Mainpage> {
   Future<void> fetchallsignupmonthly() async {
     try {
       QuerySnapshot userlogindocs =
-          await FirebaseFirestore.instance.collection('users').get();
+          await FirebaseFirestore.instance.collection('dailysignup').get();
 
       debugPrint("Documents fetched: ${userlogindocs.docs.length}");
       setState(() {
